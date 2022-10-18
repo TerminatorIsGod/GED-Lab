@@ -17,15 +17,22 @@ public class EditorManager : MonoBehaviour
     Vector3 mousePos;
     public GameObject prefab1;
     public GameObject prefab2;
-    GameObject item;
+    public GameObject item;
     public bool instantiated = false;
 
     //Will send notifications that something has happened to whoever is interested
     Subject subject = new Subject();
 
+    ICommand command;
+
     // Start is called before the first frame update
     void Start()
     {
+        if(instance == null)
+        {
+            instance = this;
+        }
+
         inputAction = PlayerInputController.controller.inputAction;
 
         inputAction.Editor.EditorMode.performed += cntxt => EnterEditorMode();
@@ -79,6 +86,10 @@ public class EditorManager : MonoBehaviour
         {
             item.GetComponent<Rigidbody>().useGravity = true;
             item.GetComponent<Collider>().enabled = true;
+
+            command = new PlaceItemCommand(item.transform.position, item.transform);
+            CommandInvoker.AddCommand(command);
+
             instantiated = false; 
         }        
     }
