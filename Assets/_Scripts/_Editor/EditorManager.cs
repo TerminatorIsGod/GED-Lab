@@ -25,14 +25,19 @@ public class EditorManager : MonoBehaviour
 
     ICommand command;
 
-    // Start is called before the first frame update
-    void Start()
+    UIManager uiManager;
+
+    private void Awake()
     {
-        if(instance == null)
+        if (instance == null)
         {
             instance = this;
         }
+    }
 
+    // Start is called before the first frame update
+    void Start()
+    {
         inputAction = PlayerInputController.controller.inputAction;
 
         inputAction.Editor.EditorMode.performed += cntxt => EnterEditorMode();
@@ -44,13 +49,16 @@ public class EditorManager : MonoBehaviour
         editorMode = false;
 
         mainCam.enabled = true;
-        editorCam.enabled = false;  
+        editorCam.enabled = false;
+
+        uiManager = GetComponent<UIManager>();
     }  
 
     public void EnterEditorMode()
     {
         mainCam.enabled = !mainCam.enabled;
         editorCam.enabled = !editorCam.enabled;
+        uiManager.ToggleEditorUI();
     }
 
     public void AddItem(int itemId)
@@ -84,7 +92,9 @@ public class EditorManager : MonoBehaviour
     {
         if(editorMode && instantiated)
         {
-            item.GetComponent<Rigidbody>().useGravity = true;
+            if(item.GetComponent<Rigidbody>())
+                item.GetComponent<Rigidbody>().useGravity = true;
+
             item.GetComponent<Collider>().enabled = true;
 
             command = new PlaceItemCommand(item.transform.position, item.transform);

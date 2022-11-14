@@ -56,7 +56,8 @@ public class PlayerController : MonoBehaviour
 
     private void Shoot()
     {
-        Rigidbody bulletRb = Instantiate(projectile, projectilePos.transform.position, Quaternion.identity).GetComponent<Rigidbody>();
+        //Rigidbody bulletRb = Instantiate(projectile, projectilePos.transform.position, Quaternion.identity).GetComponent<Rigidbody>();
+        Rigidbody bulletRb = ObjectPooler.instance.spawnFromPool("Bullet", projectilePos.transform.position, Quaternion.identity).GetComponent<Rigidbody>();
         bulletRb.AddForce(transform.forward * 32f, ForceMode.Impulse);
         bulletRb.AddForce(transform.up * 1f, ForceMode.Impulse);
     }
